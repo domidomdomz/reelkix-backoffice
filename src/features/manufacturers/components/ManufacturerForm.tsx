@@ -38,8 +38,24 @@ export default function ManufacturerForm({
         <label className="block font-medium">Description</label>
         <input {...register("description")} className="w-full border px-3 py-2 rounded" />
       </div>
-      <button type="submit" className="bg-reelkix-red text-white px-4 py-2 rounded hover:bg-red-700" disabled={isLoading}>
-        {isLoading ? "Saving..." : "Save"}
+      <button type="submit" 
+              disabled={isLoading}
+              className="bg-reelkix-red text-white px-4 py-2 rounded hover:bg-red-700">
+        {isLoading ? (
+          <>
+            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8H4z"
+              />
+            </svg>
+            <span>Saving...</span>
+          </>
+          ) : ("Save")
+        }
+
       </button>
     </form>
   );
