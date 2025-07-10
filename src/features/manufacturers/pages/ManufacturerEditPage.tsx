@@ -31,17 +31,20 @@ export default function ManufacturerEditPage() {
             ...newData
         }));
 
-        return { previous };
+        
+        toast.dismiss(); // Dismiss any previous toasts
+        // Show loading toast
+        return { previous, toastId: toast.loading("Updating manufacturer...") };
     },
 
-    onSuccess: () => {
-        // Show success message and navigate
-        toast.success("Manufacturer updated!");
+    onSuccess: (_data, _vars, context) => {
+        // Resolve toast success message and navigate
+        toast.success("Manufacturer updated!", { id: context?.toastId });
         navigate("/manufacturers");
     },
 
-    onError: (_, __, context) => {
-        toast.error("Failed to update manufacturer. Reverting changes...");
+    onError: (_error, _vars, context) => {
+        toast.error("Failed to update manufacturer. Reverting changes...", { id: context?.toastId });
         // Rollback to previous data
         if (context?.previous) {
             queryClient.setQueryData(["manufacturer", id], context.previous);
