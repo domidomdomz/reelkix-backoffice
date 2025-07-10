@@ -17,12 +17,41 @@ export default function ManufacturerEditPage() {
 
   const mutation = useMutation({
     mutationFn: (values: ManufacturerFormValues) => manufacturerApi.updateManufacturer(id!, values),
-    onSuccess: () => {
-      toast.success("Manufacturer updated!");
-      queryClient.invalidateQueries({ queryKey: ["manufacturer", id] });
-      navigate("/manufacturers");
+
+    onMutate: async (newData) => {
+        // Cancel any outgoing refetches
+        await queryClient.cancelQueries({ queryKey: ["manufacturer", id] });
+
+        // Snapshot previous data
+        const previous = queryClient.getQueryData(["manufacturer", id]);
+
+        // Optimistically update the cache
+        queryClient.setQueryData(["manufacturer", id], (oldData: any) => ({
+            ...oldData,
+            ...newData
+        }));
+
+        return { previous };
     },
-    onError: () => toast.error("Failed to update manufacturer.")
+
+    onSuccess: () => {
+        toast.success("Manufacturer updated!");
+        navigate("/manufacturers");
+    },
+
+    onError: (_, __, context) => {
+        toast.error("Failed to update manufacturer. Reverting changes...");
+        // Rollback to previous data
+        if (context?.previous) {
+            queryClient.setQueryData(["manufacturer", id], context.previous);
+        }
+    },
+
+    onSettled: () => {
+        // Always refetch after mutation
+        queryClient.invalidateQueries({ queryKey: ["manufacturer", id] });
+        queryClient.invalidateQueries({ queryKey: ["manufacturers"] });
+    }
   });
 
   const handleSubmit = (values: ManufacturerFormValues) => mutation.mutate(values);
