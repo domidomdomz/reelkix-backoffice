@@ -13,9 +13,7 @@ export default function ManufacturerListPage() {
   });
 
   useEffect(() => {
-    if (isSuccess) {
-      toast.success("Manufacturer list loaded successfully!");
-    } else if (isError && error instanceof Error) {
+    if (isError && error instanceof Error) {
       toast.error(`Failed to load manufacturers: ${error.message}`);
     }
     
