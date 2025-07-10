@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Sidebar({ isOpen }: { isOpen: boolean }) {
   return (
     <aside
@@ -6,8 +8,10 @@ export default function Sidebar({ isOpen }: { isOpen: boolean }) {
     >
       <img src="/assets/reelkix-label-logo.png" alt="Reelkix Logo" className="h-24 w-auto mb-4 hidden md:block" />
       <nav className="space-y-3">
-        <a href="/manufacturers" className="block hover:text-reelkix-red">Manufacturers</a>
-        <a href="/products" className="block hover:text-reelkix-red">Products</a>
+        
+        <Link to="/manufacturers" className="block hover:text-reelkix-red">Manufacturers</Link>
+        <Link to="/products" className="block hover:text-reelkix-red">Products</Link>
+
       </nav>
     </aside>
   );

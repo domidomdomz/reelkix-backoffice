@@ -13,7 +13,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@manufacturer-types": resolve(__dirname, "src/features/manufacturers/types"),
-      "@manufacturer-services": resolve(__dirname, "src/features/manufacturers/services")
+      "@manufacturer-services": resolve(__dirname, "src/features/manufacturers/services"),
+      "@manufacturer-pages": resolve(__dirname, "src/features/manufacturers/pages"),
+      "@manufacturer-components": resolve(__dirname, "src/features/manufacturers/components"),
     }
   }
 });

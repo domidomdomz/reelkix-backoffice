@@ -3,7 +3,9 @@
     "baseUrl": "./src",
     "paths": {
       "@manufacturer-types/*": ["features/manufacturers/types/*"],
-      "@manufacturer-services/*": ["features/manufacturers/services/*"]
+      "@manufacturer-services/*": ["features/manufacturers/services/*"],
+      "@manufacturer-pages/*": ["features/manufacturers/pages/*"],
+      "@manufacturer-components/*": ["features/manufacturers/components/*"]
     },
     "types": ["node"],
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
