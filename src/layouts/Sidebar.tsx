@@ -6,7 +6,7 @@ export default function Sidebar({ isOpen }: { isOpen: boolean }) {
     >
       <img src="/assets/reelkix-label-logo.png" alt="Reelkix Logo" className="h-24 w-auto mb-4 hidden md:block" />
       <nav className="space-y-3">
-        <a href="/suppliers" className="block hover:text-reelkix-red">Manufacturers</a>
+        <a href="/manufacturers" className="block hover:text-reelkix-red">Manufacturers</a>
         <a href="/products" className="block hover:text-reelkix-red">Products</a>
       </nav>
     </aside>
