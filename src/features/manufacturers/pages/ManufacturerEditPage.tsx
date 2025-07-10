@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ManufacturerForm from "../components/ManufacturerForm";
 import type { ManufacturerFormValues } from "../components/ManufacturerForm";
 import { manufacturerApi } from "@manufacturer-services/manufacturerApi";
@@ -8,16 +8,18 @@ import { toast } from "sonner";
 export default function ManufacturerEditPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["manufacturer", id],
-    queryFn: () => manufacturerApi.getManufacturerById(id!)
+    queryFn: () => manufacturerApi.getManufacturerById(id!),
   });
 
   const mutation = useMutation({
     mutationFn: (values: ManufacturerFormValues) => manufacturerApi.updateManufacturer(id!, values),
     onSuccess: () => {
       toast.success("Manufacturer updated!");
+      queryClient.invalidateQueries({ queryKey: ["manufacturer", id] });
       navigate("/manufacturers");
     },
     onError: () => toast.error("Failed to update manufacturer.")
