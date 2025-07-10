@@ -45,7 +45,8 @@ export default function ManufacturerAddPage() {
       // Always refetch after mutation
       queryClient.invalidateQueries({ queryKey: ["manufacturers"] });
     },
-    retry: 2 // Retry up to 2 times on failure
+    retry: 2, // Retry up to 2 times on failure
+    retryDelay: attempt => attempt * 1000, // Exponential back off. Wait 1s, 2s, etc. between retries
   });
 
   const handleSubmit = (values: ManufacturerFormValues) => mutation.mutate(values);
