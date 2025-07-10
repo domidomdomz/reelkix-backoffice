@@ -22,7 +22,7 @@ export const getManufacturerById = async (id: string): Promise<Manufacturer> => 
 
 export const updateManufacturer = async (
   id: string,
-  payload: Partial<Omit<Manufacturer, "id" | "createdAt">>
+  payload: Partial<Omit<Manufacturer, "id" | "createdAt" | "updatedAt">>
 ): Promise<Manufacturer> => {
   const res = await api.put(`/manufacturers/${id}`, payload);
   return res.data;

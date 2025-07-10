@@ -1,4 +1,5 @@
 import type { Manufacturer } from "@manufacturer-types/manufacturer";
+import { Link } from "react-router-dom";
 
 export default function ManufacturerTable({ data }: { data: Manufacturer[] }) {
   return (
@@ -15,7 +16,11 @@ export default function ManufacturerTable({ data }: { data: Manufacturer[] }) {
         <tbody>
           {data.map((m) => (
             <tr key={m.id} className="border-b">
-              <td className="px-4 py-2">{m.name}</td>
+              <td className="px-4 py-2">
+                <Link to={`/manufacturers/${m.id}/edit`} className="text-blue-500 hover:underline">
+                  {m.name}
+                </Link>
+              </td>
               <td className="px-4 py-2">{m.description ?? "—"}</td>
               <td className="px-4 py-2">{new Date(m.createdAt).toLocaleDateString()}</td>
               <td className="px-4 py-2">{new Date(m.updatedAt).toLocaleDateString()}</td>

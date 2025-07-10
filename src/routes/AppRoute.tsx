@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ManufacturerListPage from "@manufacturer-pages/ManufacturerListPage";
 import ManufacturerAddPage from "@manufacturer-pages/ManufacturerAddPage";
+import ManufacturerEditPage from "@manufacturer-pages/ManufacturerEditPage";
 import NotFoundPage from "../../src/pages/NotFoundPage";
 
 const HomeDashboard = lazy(() => import("@home-components/HomeDashboard"));
@@ -23,6 +24,8 @@ export default function AppRoutes() {
 
             <Route path="/manufacturers" element={<ManufacturerListPage />} />
             <Route path="/manufacturers/add" element={<ManufacturerAddPage />} />
+            <Route path="/manufacturers/:id/edit" element={<ManufacturerEditPage />} />
+
 
             <Route path="/products" element={<Navigate to="/" />} />
 
