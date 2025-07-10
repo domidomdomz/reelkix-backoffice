@@ -11,10 +11,12 @@ export type ManufacturerFormValues = z.infer<typeof schema>;
 
 export default function ManufacturerForm({
   defaultValues,
-  onSubmit
+  onSubmit,
+  isLoading
 }: {
   defaultValues?: ManufacturerFormValues;
   onSubmit: (values: ManufacturerFormValues) => void;
+  isLoading?: boolean;
 }) {
   const {
     register,
@@ -36,8 +38,8 @@ export default function ManufacturerForm({
         <label className="block font-medium">Description</label>
         <input {...register("description")} className="w-full border px-3 py-2 rounded" />
       </div>
-      <button type="submit" className="bg-reelkix-red text-white px-4 py-2 rounded hover:bg-red-700">
-        Submit
+      <button type="submit" className="bg-reelkix-red text-white px-4 py-2 rounded hover:bg-red-700" disabled={isLoading}>
+        {isLoading ? "Saving..." : "Save"}
       </button>
     </form>
   );

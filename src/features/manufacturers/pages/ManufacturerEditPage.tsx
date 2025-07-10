@@ -35,6 +35,7 @@ export default function ManufacturerEditPage() {
     },
 
     onSuccess: () => {
+        // Show success message and navigate
         toast.success("Manufacturer updated!");
         navigate("/manufacturers");
     },
@@ -62,7 +63,10 @@ export default function ManufacturerEditPage() {
   return (
     <div>
       <h1 className="text-xl font-bold mb-4 text-reelkix-red">Edit Manufacturer</h1>
-      <ManufacturerForm defaultValues={data} onSubmit={handleSubmit} />
+      <ManufacturerForm 
+        defaultValues={data} 
+        onSubmit={handleSubmit} 
+        isLoading={mutation.isPending} />
     </div>
   );
 }
