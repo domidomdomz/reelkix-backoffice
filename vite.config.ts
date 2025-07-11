@@ -16,6 +16,10 @@ export default defineConfig({
       "@manufacturer-services": resolve(__dirname, "src/features/manufacturers/services"),
       "@manufacturer-pages": resolve(__dirname, "src/features/manufacturers/pages"),
       "@manufacturer-components": resolve(__dirname, "src/features/manufacturers/components"),
+      "@product-types": resolve(__dirname, "src/features/products/types"),
+      "@product-services": resolve(__dirname, "src/features/products/services"),
+      "@product-pages": resolve(__dirname, "src/features/products/pages"),
+      "@product-components": resolve(__dirname, "src/features/products/components"),
       "@home-components": resolve(__dirname, "src/features/home/components"),
     }
   }
