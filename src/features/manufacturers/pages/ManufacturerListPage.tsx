@@ -21,12 +21,15 @@ export default function ManufacturerListPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4 text-reelkix-red">Manufacturers</h1>
-
-      <div className="mb-4">
-        <Link to="/manufacturers/add" className="bg-reelkix-red text-white px-4 py-2 rounded hover:bg-red-700">
-          Add Manufacturer
-        </Link>
+      <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold text-reelkix-red">Manufacturers</h1>
+          <Link
+              to="/manufacturers/add"
+              className="bg-reelkix-red text-white px-3 py-2 rounded hover:bg-red-700"
+              title="Add Manufacturer"
+          >
+              + Add Manufacturer
+          </Link>
       </div>
 
       {isLoading && <p>Loading...</p>}

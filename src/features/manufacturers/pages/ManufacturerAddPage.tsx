@@ -37,7 +37,12 @@ export default function ManufacturerAddPage() {
     },
 
     onSuccess: () => {
+      // Resolve toast success message
       toast.success("Manufacturer created successfully!");
+
+      // Invalidate the manufacturers list to refetch
+      queryClient.invalidateQueries({ queryKey: ["manufacturers"] });
+      
       navigate("/manufacturers");
     },
 

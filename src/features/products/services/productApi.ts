@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Product } from "@product-types/product";
+import type { CreateProductPayload, Product } from "@product-types/product";
 
 const api = axios.create({ baseURL: "https://localhost:7037/api" });
 
@@ -13,9 +13,17 @@ export const getProductById = async (id: string): Promise<Product> => {
   return res.data;
 };
 
+export const createProduct = async (
+  payload: CreateProductPayload
+): Promise<Product> => {
+    const res = await api.post("/products", payload);
+    return res.data;
+}
+
 // Exporting the API functions as an object
 // This allows for easier import in other parts of the application
 export const productApi = {
-  getProducts,
-  getProductById
+    getProducts,
+    getProductById,
+    createProduct
 };

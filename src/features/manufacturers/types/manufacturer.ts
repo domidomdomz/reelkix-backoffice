@@ -5,3 +5,8 @@ export interface Manufacturer {
     createdAt: string;
     updatedAt: string;
 }
+
+export type ManufacturerOption = {
+  label: string;
+  value: string;
+};

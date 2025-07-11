@@ -40,6 +40,10 @@ export default function ManufacturerEditPage() {
     onSuccess: (_data, _vars, context) => {
         // Resolve toast success message and navigate
         toast.success("Manufacturer updated!", { id: context?.toastId });
+        
+        // Invalidate the manufacturers list to refetch
+        queryClient.invalidateQueries({ queryKey: ["manufacturers"] }); 
+        
         navigate("/manufacturers");
     },
 
