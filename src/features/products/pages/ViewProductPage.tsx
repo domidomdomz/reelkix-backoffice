@@ -17,8 +17,9 @@ export default function ViewProductPage() {
     <div>
       <h1 className="text-2xl font-bold text-reelkix-red">{product.name}</h1>
       <p className="mt-2 text-gray-700">{product.description}</p>
+      <p className="mt-2 text-gray-700">{product.manufacturerName}</p>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
+      <div className="grid grid-cols-2 sm:grid-cols-6 gap-4 mt-4">
         {product.imageUrls.map((url, idx) => (
           <img
             key={idx}
