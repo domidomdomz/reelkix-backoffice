@@ -5,13 +5,23 @@ import ProductForm from "@product-components/ProductForm";
 import type { Product } from "@product-types/product";
 import type { ProductFormValues } from "@product-schemas/productFormSchema";
 import { productApi } from "@product-services/productApi";
+import type { AxiosError } from "axios";
+import { useForm } from "react-hook-form";
+import type { CreateProductErrorResponse } from "@common-types/api";
+import { parseApiValidationErrors } from "@common-utils/parseApiErrors";
 
 export default function ProductAddPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { setError } = useForm<ProductFormValues>();
 
   const mutation = useMutation({
+
+    // mutationFn is the function that will be called to perform the mutation
     mutationFn: productApi.createProduct,
+    
+    retry: 2, // Retry up to 2 times on failure
+    retryDelay: (attempt) => attempt * 1000, // Exponential back off. Wait 1s, 2s, etc. between retries
 
     onMutate: async (newProduct) => {
         // Optimistically update the cache
@@ -56,7 +66,28 @@ export default function ProductAddPage() {
       toast.success("Product created!");
       navigate("/products");
     },
-    onError: () => toast.error("Failed to create product.")
+
+    onError: (error: AxiosError<CreateProductErrorResponse>) => {
+        const errorData = error.response?.data;
+
+        if (Array.isArray(errorData?.Errors)) {
+            
+            parseApiValidationErrors<ProductFormValues>(
+                errorData.Errors,
+                setError,
+                (msg) => toast.error(msg)
+            );
+            
+        } else {
+            // If the error is not an array, show a generic error message
+            toast.error("Unexpected error. Please try again.");
+        }
+    },
+
+    onSettled: () => {
+      // Always refetch after mutation to ensure the cache is up-to-date
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
   });
 
   const handleSubmit = (values: ProductFormValues) => mutation.mutate(values);

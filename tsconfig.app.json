@@ -2,6 +2,8 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
+      "@common-types/*": ["features/common/types/*"],
+      "@common-utils/*": ["features/common/utils/*"],
       "@manufacturer-types/*": ["features/manufacturers/types/*"],
       "@manufacturer-services/*": ["features/manufacturers/services/*"],
       "@manufacturer-pages/*": ["features/manufacturers/pages/*"],

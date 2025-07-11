@@ -12,6 +12,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      "@common-types": resolve(__dirname, "src/features/common/types"),
+      "@common-utils": resolve(__dirname, "src/features/common/utils"),
       "@manufacturer-types": resolve(__dirname, "src/features/manufacturers/types"),
       "@manufacturer-services": resolve(__dirname, "src/features/manufacturers/services"),
       "@manufacturer-pages": resolve(__dirname, "src/features/manufacturers/pages"),

@@ -17,7 +17,7 @@ export default function ManufacturerTable({ data }: { data: Manufacturer[] }) {
           {data.map((m) => (
             <tr key={m.id} className="border-b">
               <td className="px-4 py-2">
-                <Link to={`/manufacturers/${m.id}/edit`} className="text-blue-500 hover:underline">
+                <Link to={`/manufacturers/${m.id}/edit`} className="font-medium text-gray-800 hover:text-reelkix-red">
                   {m.name}
                 </Link>
               </td>

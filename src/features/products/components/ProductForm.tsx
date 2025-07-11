@@ -31,34 +31,44 @@ export default function ProductForm({ onSubmit, isLoading }: {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
       {/* Name */}
       <div>
-        <label className="block font-medium">Product Name</label>
+        <label className="block font-medium">
+            Product Name<span className="text-red-500">*</span>
+        </label>
         <input {...register("name")} placeholder="Enter Product Name" className="w-full border px-3 py-2 rounded" />
         {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
       </div>
 
       {/* Description */}
       <div>
-        <label className="block font-medium">Description</label>
+        <label className="block font-medium">
+            Description
+        </label>
         <textarea {...register("description")} placeholder="Enter Product Description" className="w-full border px-3 py-2 rounded" />
       </div>
 
       {/* Cost Price */}
       <div>
-        <label className="block font-medium">Cost Price</label>
+        <label className="block font-medium">
+            Cost Price<span className="text-red-500">*</span>
+        </label>
         <input type="number" step="0.01" {...register("costPrice", { valueAsNumber: true })} className="w-full border px-3 py-2 rounded" />
         {errors.costPrice && <p className="text-red-500 text-sm">{errors.costPrice.message}</p>}
       </div>
 
       {/* Selling Price */}
       <div>
-        <label className="block font-medium">Selling Price</label>
+        <label className="block font-medium">
+            Selling Price<span className="text-red-500">*</span>
+        </label>
         <input type="number" step="0.01" {...register("sellingPrice", { valueAsNumber: true })} className="w-full border px-3 py-2 rounded" />
         {errors.sellingPrice && <p className="text-red-500 text-sm">{errors.sellingPrice.message}</p>}
       </div>
 
       {/* Manufacturer Dropdown */}
       <div>
-        <label className="block font-medium">Select Manufacturer</label>
+        <label className="block font-medium">
+            Select Manufacturer<span className="text-red-500">*</span>
+        </label>
         
         <Controller
             name="manufacturerId"
@@ -100,7 +110,7 @@ export default function ProductForm({ onSubmit, isLoading }: {
         disabled={isLoading}
         className="bg-reelkix-red text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50"
       >
-        {isLoading ? "Submitting..." : "Add Product"}
+        {isLoading ? "Saving..." : "Save Product"}
       </button>
     </form>
   );
