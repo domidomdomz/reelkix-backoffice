@@ -36,6 +36,7 @@ export default function ProductAddPage() {
       file,
       previewUrl: URL.createObjectURL(file),
       sortOrder: baseIndex + index,
+      altText: file.name,
       progress: 0
     }));
 
@@ -84,9 +85,9 @@ export default function ProductAddPage() {
       sellingPrice: formValues.sellingPrice,
       images: uploadedImages
               .filter((img) => typeof img.imageId === 'string') // only include successful uploads
-              .map((img) => ({
+              .map((img, idx) => ({
                 id: img.imageId!, // safe after filter
-                sortOrder: img.sortOrder,
+                sortOrder: idx,
                 altText: img.altText
               }))
     };
@@ -111,6 +112,7 @@ export default function ProductAddPage() {
       productId={productId}
       images={uploadedImages}
       onDrop={handleDrop}
+      onReorder={setUploadedImages}
       onFinalize={handleFinalize}
       isUploading={isUploading}
       isFinalizing={isFinalizing}
