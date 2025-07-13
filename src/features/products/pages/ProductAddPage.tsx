@@ -1,101 +1,78 @@
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import ProductForm from "@product-components/ProductForm";
-import type { Product } from "@product-types/product";
-import type { ProductFormValues } from "@product-schemas/productFormSchema";
-import { productApi } from "@product-services/productApi";
-import type { AxiosError } from "axios";
-import { useForm } from "react-hook-form";
-import type { CreateProductErrorResponse } from "@common-types/api";
-import { parseApiValidationErrors } from "@common-utils/parseApiErrors";
+import { useState } from 'react';
+import ProductForm from '../components/ProductForm';
+import type { ProductFormValues} from "@product-schemas/productFormSchema";
+import ProductImageUploader from "@product-components/ProductImageUploader";
+import { useProductCreateFlow } from '../hooks/useProductCreateFlow';
 
 export default function ProductAddPage() {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const { setError } = useForm<ProductFormValues>();
+  const {
+    productId,
+    createDraft,
+    uploadImage,
+    finalize,
+    isDrafting,
+    isUploading,
+    isFinalizing
+  } = useProductCreateFlow();
 
-  const mutation = useMutation({
+  const [formValues, setFormValues] = useState<ProductFormValues | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<any[]>([]);
 
-    // mutationFn is the function that will be called to perform the mutation
-    mutationFn: productApi.createProduct,
-    
-    retry: 2, // Retry up to 2 times on failure
-    retryDelay: (attempt) => attempt * 1000, // Exponential back off. Wait 1s, 2s, etc. between retries
+  // Phase 1 submit
+  const handleFormSubmit = async (values: ProductFormValues) => {
+    await createDraft({
+      name: values.name,
+      description: values.description,
+      manufacturerId: values.manufacturerId
+    });
+    setFormValues(values);
+  };
 
-    onMutate: async (newProduct) => {
-        // Optimistically update the cache
+  // Phase 2: on each file drop
+  const handleDrop = async (files: File[]) => {
+    for (let i = 0; i < files.length; i++) {
+      const img = await uploadImage({ file: files[i], sortOrder: uploadedImages.length + i });
+      setUploadedImages((prev) => [...prev, img]);
+    }
+  };
 
-        // Cancel any outgoing refetches
-        // This will prevent the query from being refetched while we update the cache
-        // This is important to avoid flickering or showing stale data
-        await queryClient.cancelQueries({ queryKey: ["products"] });
+  // Phase 2: finalize product
+  const handleFinalize = async () => {
+    if (!formValues || !productId) return;
 
-        // Snapshot the previous value
-        // This allows us to roll back if the mutation fails
-        const previous = queryClient.getQueryData<Product[]>(["products"]) || [];
+    await finalize({
+      productId,
+      ...formValues,
+      costPrice: formValues.costPrice,
+      sellingPrice: formValues.sellingPrice,
+      images: uploadedImages.map((img) => ({
+        id: img.imageId,
+        sortOrder: img.sortOrder,
+        altText: img.altText
+      }))
+    });
 
-        // Create a fake product object to optimistically update the UI
-        // This is a temporary object that will be replaced with the actual product once the mutation succeeds
-        const fakeProduct: Product = {
-            id: crypto.randomUUID(), // temporary ID
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            // Assuming imageUrls is an array of strings
-            imageUrls: [],
-            manufacturerId: newProduct.manufacturerId,
-            name: newProduct.name,
-            description: newProduct.description || "",
-            costPrice: newProduct.costPrice,
-            sellingPrice: newProduct.sellingPrice,
-            manufacturerName: "Loading…" // optional fallback or lookup
-        };
+    // Redirect or toast…
+  };
 
-        // Update the cache with the new product
-        // This will immediately reflect the new product in the UI
-        // We use the spread operator to append the new product to the existing list
-        queryClient.setQueryData<Product[]>(["products"], [...previous, fakeProduct]);
-
-        // Return the previous value so we can roll back if needed
-        // This is used in the onError callback to revert the cache to its previous state
-        return { previous };
-    },
-
-
-    onSuccess: () => {
-      toast.success("Product created!");
-      navigate("/products");
-    },
-
-    onError: (error: AxiosError<CreateProductErrorResponse>) => {
-        const errorData = error.response?.data;
-
-        if (Array.isArray(errorData?.Errors)) {
-            
-            parseApiValidationErrors<ProductFormValues>(
-                errorData.Errors,
-                setError,
-                (msg) => toast.error(msg)
-            );
-            
-        } else {
-            // If the error is not an array, show a generic error message
-            toast.error("Unexpected error. Please try again.");
-        }
-    },
-
-    onSettled: () => {
-      // Always refetch after mutation to ensure the cache is up-to-date
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-    },
-  });
-
-  const handleSubmit = (values: ProductFormValues) => mutation.mutate(values);
+  // Render Phase 1 or Phase 2
+  if (!productId || !formValues) {
+    return (
+      <ProductForm
+        isLoading={isDrafting}
+        onSubmit={handleFormSubmit}
+      />
+    );
+  }
 
   return (
-    <div>
-      <h1 className="text-xl font-bold mb-4 text-reelkix-red">Add Product</h1>
-      <ProductForm onSubmit={handleSubmit} isLoading={mutation.isPending} />
-    </div>
+    <ProductImageUploader
+      productId={productId}
+      images={uploadedImages}
+      onDrop={handleDrop}
+      onFinalize={handleFinalize}
+      isUploading={isUploading}
+      isFinalizing={isFinalizing}
+    />
   );
 }

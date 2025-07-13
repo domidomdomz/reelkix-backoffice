@@ -6,10 +6,12 @@ import type { ProductFormValues } from "@product-schemas/productFormSchema"; // 
 import { useManufacturerList } from "@manufacturer-hooks/useManufacturerList"; // Lazy-loaded cache hook
 import type { ManufacturerOption } from "@manufacturer-types/manufacturer"; // Importing the type for manufacturer options
 
-export default function ProductForm({ onSubmit, isLoading }: {
-  onSubmit: (values: ProductFormValues) => void;
+interface Props {
   isLoading?: boolean;
-}) {
+  onSubmit: (values: ProductFormValues) => Promise<void>;
+}
+
+export default function ProductForm({ isLoading, onSubmit }: Props) {
   const { register, handleSubmit, formState: { errors }, control } = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
@@ -28,7 +30,7 @@ export default function ProductForm({ onSubmit, isLoading }: {
   }));
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">      
       {/* Name */}
       <div>
         <label className="block font-medium">
@@ -104,13 +106,12 @@ export default function ProductForm({ onSubmit, isLoading }: {
         {errors.manufacturerId && <p className="text-red-500 text-sm">{errors.manufacturerId.message}</p>}
       </div>
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="bg-reelkix-red text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50"
-      >
-        {isLoading ? "Saving..." : "Save Product"}
+      {/* Next: Add Images */}
+      <button 
+            type="submit" 
+            disabled={isLoading}
+            className="bg-reelkix-red text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50">
+        Next: Add Images
       </button>
     </form>
   );

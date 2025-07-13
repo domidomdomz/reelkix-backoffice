@@ -24,6 +24,7 @@ export default defineConfig({
       "@product-services": resolve(__dirname, "src/features/products/services"),
       "@product-pages": resolve(__dirname, "src/features/products/pages"),
       "@product-components": resolve(__dirname, "src/features/products/components"),
+      "@product-hooks": resolve(__dirname, "src/features/products/hooks"),
       "@home-components": resolve(__dirname, "src/features/home/components"),
     }
   }

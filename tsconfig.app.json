@@ -14,6 +14,7 @@
       "@product-services/*": ["features/products/services/*"],
       "@product-pages/*": ["features/products/pages/*"],
       "@product-components/*": ["features/products/components/*"],
+      "@product-hooks/*": ["features/products/hooks/*"],
       "@home-components/*": ["features/home/components/*"],
     },
     "types": ["node"],

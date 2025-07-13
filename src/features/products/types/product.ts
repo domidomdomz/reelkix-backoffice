@@ -21,7 +21,33 @@ export type CreateProductPayload = {
     imageUrls?: string[]; // Optional, can be empty or omitted
 };
 
-export type UpdateProductPayload = Partial<CreateProductPayload> & {
-    id: string; // Include the product ID for updates
-    imageUrls?: string[]; // Optional, can be updated or removed
-};
+export interface CreateDraftProductPayload {
+  name: string;
+  description?: string;
+  manufacturerId: string;
+}
+
+export interface ProductImage {
+    imageId: string;
+    url: string;
+    sortOrder: number; // Order of the image in the product gallery
+    altText: string; // Optional alternative text for the image
+}
+
+export interface UploadedImageResponse {
+    imageId: string; // ID of the uploaded image
+}
+
+export interface UpdateProductPayload {
+    productId: string;
+    name: string;
+    description?: string;
+    manufacturerId: string;
+    costPrice: number;
+    sellingPrice: number;
+    images: {
+        id: string;
+        sortOrder: number;
+        altText?: string; // Optional alternative text for the image
+    }[];
+}
