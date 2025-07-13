@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ProductForm from '../components/ProductForm';
 import type { ProductFormValues} from "@product-schemas/productFormSchema";
 import ProductImageUploader from "@product-components/ProductImageUploader";
+import type { UploadItem } from '@product-types/product';
 import { useProductCreateFlow } from '../hooks/useProductCreateFlow';
 
 export default function ProductAddPage() {
@@ -16,7 +17,7 @@ export default function ProductAddPage() {
   } = useProductCreateFlow();
 
   const [formValues, setFormValues] = useState<ProductFormValues | null>(null);
-  const [uploadedImages, setUploadedImages] = useState<any[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<UploadItem[]>([]);
 
   // Phase 1 submit
   const handleFormSubmit = async (values: ProductFormValues) => {
@@ -30,27 +31,67 @@ export default function ProductAddPage() {
 
   // Phase 2: on each file drop
   const handleDrop = async (files: File[]) => {
-    for (let i = 0; i < files.length; i++) {
-      const img = await uploadImage({ file: files[i], sortOrder: uploadedImages.length + i });
-      setUploadedImages((prev) => [...prev, img]);
-    }
+    const baseIndex = uploadedImages.length;
+    const newItems: UploadItem[] = files.map((file, index) => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+      sortOrder: baseIndex + index,
+      progress: 0
+    }));
+
+    // Update state with new uploadedImages (Previews should be shown immediately)
+    setUploadedImages((prev) => [...prev, ...newItems]);
+
+    // Start uploads with progress callbacks
+    newItems.forEach((item) => {
+      uploadImage({
+        file: item.file,
+        sortOrder: item.sortOrder,
+        onProgress: (progress) => {
+          setUploadedImages((prev) =>
+            prev.map((upload) =>
+              upload.file === item.file ? { ...upload, progress } : upload
+            )
+          );
+        }
+      })
+      .then((response) => {
+        setUploadedImages((prev) => 
+          prev.map((upload) =>
+            upload.file === item.file ? { ...upload, imageId: response.imageId } : upload
+          )
+        );
+      })
+      .catch(() => {
+        // Optionally mark failure
+        setUploadedImages((prev) =>
+          prev.map((upload) =>
+            upload.file === item.file ? { ...upload, progress: -1 } : upload
+          )
+        );
+      });
+    });
   };
 
   // Phase 2: finalize product
   const handleFinalize = async () => {
     if (!formValues || !productId) return;
 
-    await finalize({
+    const payload = {
       productId,
       ...formValues,
       costPrice: formValues.costPrice,
       sellingPrice: formValues.sellingPrice,
-      images: uploadedImages.map((img) => ({
-        id: img.imageId,
-        sortOrder: img.sortOrder,
-        altText: img.altText
-      }))
-    });
+      images: uploadedImages
+              .filter((img) => typeof img.imageId === 'string') // only include successful uploads
+              .map((img) => ({
+                id: img.imageId!, // safe after filter
+                sortOrder: img.sortOrder,
+                altText: img.altText
+              }))
+    };
+
+    await finalize(payload);
 
     // Redirect or toast…
   };

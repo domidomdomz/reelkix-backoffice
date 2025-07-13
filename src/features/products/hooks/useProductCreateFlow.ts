@@ -5,7 +5,7 @@ import {
   uploadProductImage,
   updateProduct,
 } from '@product-services/productApi';
-import type { CreateDraftProductPayload, UpdateProductPayload, UploadedImageResponse } from '@product-types/product';
+import type { CreateDraftProductPayload, UpdateProductPayload, UploadedImageResponse, UploadArgs } from '@product-types/product';
 
 export function useProductCreateFlow() {
     const [productId, setProductId] = useState<string | null>(null);
@@ -15,11 +15,11 @@ export function useProductCreateFlow() {
         onSuccess: (id) => setProductId(id)
     });
 
-    const uploadMutation = useMutation<UploadedImageResponse, Error, { file: File; sortOrder: number }>({
-    mutationFn: ({ file, sortOrder }) => {
-        if (!productId) throw new Error('No productId set');
-        return uploadProductImage(productId, file, sortOrder);
-    }
+    const uploadMutation = useMutation<UploadedImageResponse, Error, UploadArgs>({
+        mutationFn: ({ file, sortOrder, onProgress }) => {
+            if (!productId) throw new Error('No productId set');
+            return uploadProductImage(productId, file, sortOrder, onProgress);
+        }
     });
 
     const finalizeMutation = useMutation<void, Error, UpdateProductPayload>({
