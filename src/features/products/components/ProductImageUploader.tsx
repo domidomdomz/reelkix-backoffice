@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import { useDropzone } from 'react-dropzone';
 import {
   DndContext,
@@ -10,8 +9,7 @@ import {
 import {
   SortableContext,
   arrayMove,
-  horizontalListSortingStrategy,
-  verticalListSortingStrategy
+  horizontalListSortingStrategy
 } from '@dnd-kit/sortable';
 import SortableImage from '@product-components/SortableImage';
 import type { UploadItem } from "@product-types/product";
@@ -24,6 +22,7 @@ interface Props {
   onFinalize: () => void;
   isUploading?: boolean;
   isFinalizing?: boolean;
+  children?: React.ReactNode;
 }
 
 export default function ProductImageUploader({
@@ -32,7 +31,8 @@ export default function ProductImageUploader({
   onReorder,
   onFinalize,
   isUploading,
-  isFinalizing
+  isFinalizing,
+  children
 }: Props) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'image/*': [] },
@@ -51,6 +51,14 @@ export default function ProductImageUploader({
 
   return (
     <div className="p-6 space-y-4">
+
+      {children && (
+        <div className="flex justify-between items-center">
+          {children}
+        </div>
+      )}
+
+
       <div
         {...getRootProps()}
         className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${

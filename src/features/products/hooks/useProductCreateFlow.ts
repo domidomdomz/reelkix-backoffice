@@ -4,6 +4,7 @@ import {
   createDraftProduct,
   uploadProductImage,
   updateProduct,
+  deleteDraftProduct
 } from '@product-services/productApi';
 import type { CreateDraftProductPayload, UpdateProductPayload, UploadedImageResponse, UploadArgs } from '@product-types/product';
 
@@ -26,15 +27,22 @@ export function useProductCreateFlow() {
         mutationFn: updateProduct
     });
 
-
+    const deleteMutation = useMutation<void, Error, string>({
+        mutationFn: deleteDraftProduct,
+        onSuccess: () => {
+                setProductId(null); // Reset productId after deletion
+        }
+    });  
 
     return {
         productId,
         createDraft: draftMutation.mutateAsync,
         uploadImage: uploadMutation.mutateAsync,
         finalize: finalizeMutation.mutateAsync,
+        deleteDraft: deleteMutation.mutateAsync,
         isDrafting: draftMutation.isPending,
         isUploading: uploadMutation.isPending,
-        isFinalizing: finalizeMutation.isPending
+        isFinalizing: finalizeMutation.isPending,
+        isDeleting: deleteMutation.isPending
     };
 }

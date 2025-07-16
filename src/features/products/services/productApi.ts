@@ -57,11 +57,14 @@ export const uploadProductImage = async (
     return data;
 };
 
-export const updateProduct = async (
-  payload: UpdateProductPayload
-) => {
+export const updateProduct = async (payload: UpdateProductPayload) => {
     await api.put(`/products/${payload.productId}`, payload);
 }
+
+export const deleteDraftProduct = async (productId: string): Promise<void> => {
+  await api.delete(`/products/draft/${productId}`);
+};
+
 
 // Exporting the API functions as an object
 // This allows for easier import in other parts of the application
@@ -71,5 +74,6 @@ export const productApi = {
     createProduct,
     createDraftProduct,
     uploadProductImage,
-    updateProduct
+    updateProduct,
+    deleteDraftProduct
 };
