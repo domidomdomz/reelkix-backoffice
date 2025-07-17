@@ -22,9 +22,11 @@ export type CreateProductPayload = {
 };
 
 export interface CreateDraftProductPayload {
-  name: string;
-  description?: string;
-  manufacturerId: string;
+    name: string;
+    description?: string;
+    costPrice: number;
+    sellingPrice: number;
+    manufacturerId: string;
 }
 
 // export interface ProductImage {
@@ -46,7 +48,7 @@ export interface UpdateProductPayload {
     costPrice: number;
     sellingPrice: number;
     images: {
-        id: string;
+        imageId: string;
         sortOrder: number;
         altText?: string; // Optional alternative text for the image
     }[];

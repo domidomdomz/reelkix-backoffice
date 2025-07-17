@@ -13,10 +13,14 @@ export default function ProductAddPage() {
     uploadImage,
     finalize,
     deleteDraft,
+    updateDraft,
+    fetchDraft,
+    draftData,
     isDrafting,
     isUploading,
     isFinalizing,
-    isDeleting
+    isDeleting,
+    isDraftLoading
   } = useProductCreateFlow();
 
   const navigate = useNavigate();
@@ -37,11 +41,31 @@ export default function ProductAddPage() {
 
   // Phase 1 submit
   const handleFormSubmit = async (values: ProductFormValues) => {
-    await createDraft({
-      name: values.name,
-      description: values.description,
-      manufacturerId: values.manufacturerId
-    });
+    if (productId) {
+      // Update existing draft
+      await updateDraft({
+        productId,
+        payload: {
+          productId: productId,
+          name: values.name,
+          description: values.description,
+          manufacturerId: values.manufacturerId,
+          costPrice: values.costPrice,
+          sellingPrice: values.sellingPrice
+        }
+      });
+
+    } else {
+      // Create new draft
+      await createDraft({
+        name: values.name,
+        description: values.description,
+        manufacturerId: values.manufacturerId,
+        costPrice: values.costPrice,
+        sellingPrice: values.sellingPrice
+      });
+    }
+
     setFormValues(values);
   };
 
@@ -90,6 +114,13 @@ export default function ProductAddPage() {
     });
   };
 
+  // Phase 2: reorder images
+  const handleReorder = (newOrder: UploadItem[]) => {
+    console.log('Reordering images:', newOrder);
+    // Update the sortOrder based on new order
+    setUploadedImages(newOrder);
+  };
+
   // Phase 2: finalize product
   const handleFinalize = async () => {
     if (!formValues || !productId) return;
@@ -102,25 +133,28 @@ export default function ProductAddPage() {
       images: uploadedImages
               .filter((img) => typeof img.imageId === 'string') // only include successful uploads
               .map((img, idx) => ({
-                id: img.imageId!, // safe after filter
+                imageId: img.imageId!, // safe after filter
                 sortOrder: idx,
                 altText: img.altText
               }))
     };
 
+    console.log('Finalizing product with payload:', payload);
     await finalize(payload);
     // Redirect or toast…
+    navigate(`/products/${productId}`); // Redirect to product details
   };
 
   // Phase 2 → go back to details
-  const handleBackToDetails = () => {
+  const handleBackToDetails = async () => {
     if (
       !window.confirm(
-        'Going back will discard any uploaded images. Continue to Details?'
+        'Continue to Details?'
       )
     ) return;
 
-    setUploadedImages([]);
+    await fetchDraft(productId!); // manually fetch draft data
+    //setUploadedImages([]);
     setFormValues(null);
   };
 
@@ -138,7 +172,8 @@ export default function ProductAddPage() {
     return (
       <div className="p-6 max-w-xl space-y-4">
         <ProductForm
-          isLoading={isDrafting}
+          isLoading={isDrafting || isDraftLoading}
+          defaultValues={draftData || undefined}
           onSubmit={handleFormSubmit}
         />
         {productId && (
@@ -160,7 +195,7 @@ export default function ProductAddPage() {
       productId={productId!}
       images={uploadedImages}
       onDrop={handleDrop}
-      onReorder={setUploadedImages}
+      onReorder={handleReorder}
       onFinalize={handleFinalize}
       isUploading={isUploading}
       isFinalizing={isFinalizing}>

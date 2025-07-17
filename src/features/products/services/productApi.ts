@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { CreateProductPayload, Product, UploadedImageResponse, UpdateProductPayload, CreateDraftProductPayload } from "@product-types/product";
+import type { ProductFormValues } from "@product-schemas/productFormSchema";
 
 const api = axios.create({ baseURL: "https://localhost:7037/api" });
 
@@ -44,6 +45,16 @@ export const createDraftProduct = async (
 ): Promise<string> => {
     const { data } = await api.post("/products/draft", payload);
     return data.productId;
+}
+
+/**
+ * Update an existing draft product
+ */
+export const updateDraftProduct = async (
+  productId: string,
+  payload: ProductFormValues
+): Promise<void> => {
+  await api.put<ProductFormValues>(`/products/draft/${productId}`, payload);
 }
 
 /**
@@ -94,6 +105,18 @@ export const updateProduct = async (payload: UpdateProductPayload) => {
 }
 
 /**
+ * Get a draft product by ID
+ * @param productId 
+ * @returns {Promise<ProductFormValues>} - A promise that resolves to the draft product details
+ */
+export const getDraftProduct = async (
+  productId: string
+): Promise<ProductFormValues> => {
+  const { data } = await api.get<ProductFormValues>(`/products/draft/${productId}`);
+  return data;
+};
+
+/**
  * Delete a draft product by ID
  * @param productId - The ID of the draft product to delete
  * @returns {Promise<void>} - A promise that resolves when the draft product is deleted
@@ -110,7 +133,9 @@ export const productApi = {
     getProductById,
     createProduct,
     createDraftProduct,
+    updateDraftProduct,
     uploadProductImage,
     updateProduct,
+    getDraftProduct,
     deleteDraftProduct
 };

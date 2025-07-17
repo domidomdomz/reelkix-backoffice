@@ -7,14 +7,15 @@ import { useManufacturerList } from "@manufacturer-hooks/useManufacturerList"; /
 import type { ManufacturerOption } from "@manufacturer-types/manufacturer"; // Importing the type for manufacturer options
 
 interface Props {
+  defaultValues?: ProductFormValues;
   isLoading?: boolean;
   onSubmit: (values: ProductFormValues) => Promise<void>;
 }
 
-export default function ProductForm({ isLoading, onSubmit }: Props) {
+export default function ProductForm({ defaultValues, isLoading, onSubmit }: Props) {
   const { register, handleSubmit, formState: { errors }, control } = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       name: "",
       description: "",
       costPrice: 0,

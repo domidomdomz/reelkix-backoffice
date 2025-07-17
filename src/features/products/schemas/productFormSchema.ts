@@ -1,6 +1,7 @@
 import { z } from "zod"; // Importing zod for schema validation
 
 export const productFormSchema = z.object({
+    productId: z.string().optional(), // Optional ID for existing products
     name: z.string({ error: "Product name is required." }).min(1, "Product name is required."),
     description: z.string().optional(),
     costPrice: z.number({ error: "Cost price is required." }).min(0, "Cost price must be at least 0."),
