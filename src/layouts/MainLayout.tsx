@@ -7,11 +7,11 @@ export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-gray-100">
       <Topbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      <div className="md:flex">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar isOpen={sidebarOpen} />
-        <main className="flex-1 p-4">
+        <main className="flex-1 overflow-y-auto p-4">
           <Outlet />
         </main>
       </div>
