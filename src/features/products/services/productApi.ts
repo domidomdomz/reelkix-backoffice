@@ -96,6 +96,15 @@ export const uploadProductImage = async (
 };
 
 /**
+ * Delete a product image
+ */
+export const deleteProductImage = async (
+  productId: string,
+  imageId: string
+): Promise<void> => 
+    await api.delete(`/products/${productId}/images/${imageId}`);
+
+/**
  * Save changes to an existing product and set IsDraft to false
  * @param payload - The payload containing updated product details
  * @returns {Promise<void>} - A promise that resolves when the product is updated
@@ -135,6 +144,7 @@ export const productApi = {
     createDraftProduct,
     updateDraftProduct,
     uploadProductImage,
+    deleteProductImage,
     updateProduct,
     getDraftProduct,
     deleteDraftProduct

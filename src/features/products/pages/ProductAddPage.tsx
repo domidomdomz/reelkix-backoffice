@@ -14,13 +14,15 @@ export default function ProductAddPage() {
     finalize,
     deleteDraft,
     updateDraft,
+    deleteImage,
     fetchDraft,
     draftData,
     isDrafting,
     isUploading,
     isFinalizing,
     isDeleting,
-    isDraftLoading
+    isDraftLoading,
+    isDeletingImage
   } = useProductCreateFlow();
 
   const navigate = useNavigate();
@@ -197,8 +199,19 @@ export default function ProductAddPage() {
       onDrop={handleDrop}
       onReorder={handleReorder}
       onFinalize={handleFinalize}
+      onDeleteImage={async (imageId) => {
+          if (!window.confirm("Delete this image?")) return;
+
+          await deleteImage({ productId: productId!, imageId });
+
+          setUploadedImages((prev) =>
+            prev.filter((img) => img.imageId !== imageId)
+          );
+        }
+      }
       isUploading={isUploading}
-      isFinalizing={isFinalizing}>
+      isFinalizing={isFinalizing}
+      isDeletingImage={isDeletingImage}>
         <button
           onClick={handleBackToDetails}
           className="mr-4 text-gray-700 hover:underline"

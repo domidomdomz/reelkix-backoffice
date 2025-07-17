@@ -20,8 +20,10 @@ interface Props {
   onDrop: (files: File[]) => void;
   onReorder: (newOrder: UploadItem[]) => void;
   onFinalize: () => void;
+  onDeleteImage: (imageId: string) => void;
   isUploading?: boolean;
   isFinalizing?: boolean;
+  isDeletingImage?: boolean;
   children?: React.ReactNode;
 }
 
@@ -30,8 +32,10 @@ export default function ProductImageUploader({
   onDrop,
   onReorder,
   onFinalize,
+  onDeleteImage,
   isUploading,
   isFinalizing,
+  isDeletingImage,
   children
 }: Props) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -82,6 +86,7 @@ export default function ProductImageUploader({
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={({ active, over }) => {
+          if (isDeletingImage) return; // skip reorder during delete
           if (over && active.id !== over.id) {
             const oldIndex = images.findIndex(i => i.previewUrl === active.id)
             const newIndex = images.findIndex(i => i.previewUrl === over.id)
@@ -98,7 +103,11 @@ export default function ProductImageUploader({
         >
           <ul className="grid grid-cols-3 gap-4">
             {images.map((u) => (
-              <SortableImage key={u.previewUrl} upload={u} />
+              <SortableImage 
+                key={u.previewUrl} 
+                upload={u} 
+                onDelete={onDeleteImage}
+                isDeleting={isDeletingImage} />
             ))}
           </ul>
         </SortableContext>
