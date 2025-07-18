@@ -202,11 +202,23 @@ export default function ProductAddPage() {
       onDeleteImage={async (imageId) => {
           if (!window.confirm("Delete this image?")) return;
 
-          await deleteImage({ productId: productId!, imageId });
+          const image = uploadedImages.find((img) => img.imageId === imageId);
 
-          setUploadedImages((prev) =>
-            prev.filter((img) => img.imageId !== imageId)
-          );
+          if (!image) return;
+
+          if (image.progress === -1 || typeof image.imageId !== 'string') {
+            // Failed upload or no imageId — just remove locally
+            setUploadedImages((prev) =>
+              prev.filter((img) => img.imageId !== imageId)
+            );
+          } else {
+            // Successful upload — call API then remove
+            await deleteImage({ productId: productId!, imageId }).then(() => {
+              setUploadedImages((prev) =>
+                prev.filter((img) => img.imageId !== imageId)
+              );
+            });
+          }
         }
       }
       isUploading={isUploading}

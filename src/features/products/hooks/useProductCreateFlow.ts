@@ -53,6 +53,7 @@ export function useProductCreateFlow() {
     });
 
     const fetchDraft = async (id: string) => {
+        console.log("Fetching draft product", id);
         await draftQuery.refetch(); // ← manual trigger
     };
 
