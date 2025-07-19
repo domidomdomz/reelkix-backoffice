@@ -1,7 +1,8 @@
 import axios from "axios";
 import type { Manufacturer } from "@manufacturer-types/manufacturer";
 
-const api = axios.create({ baseURL: "https://localhost:7037/api" });
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const api = axios.create({ baseURL: API_BASE_URL });
 
 export const getManufacturers = async (): Promise<Manufacturer[]> => {
   const res = await api.get<Manufacturer[]>("/manufacturers");
