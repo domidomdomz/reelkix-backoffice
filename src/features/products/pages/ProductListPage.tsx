@@ -9,10 +9,7 @@ export default function ProductListPage() {
     queryFn: productApi.getProducts
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">Failed to load products</p>;
-  if (!data?.length) return <p>No products found</p>;
-
+  
   return (
     <div>
         {/* Page title and add product button */}
@@ -27,8 +24,12 @@ export default function ProductListPage() {
             </Link>
         </div>
 
+        {isLoading && <p>Loading...</p>}
+        {error && <p className="text-red-500">Failed to load products</p>}
+        {!data?.length && !isLoading && !error && <p>No products found</p>}
+
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {data.map(product => (
+            {data?.length && data!.map(product => (
                 <ProductCard key={product.id} product={product} />
             ))}
       </div>
