@@ -1,4 +1,6 @@
-# React + TypeScript + Vite
+# Reelkix BackOffice UI (React + TypeScript + Vite)
+
+This is the UI project of Reelkix BackOffice where the admin users can input the shoes, manufacturers, suppliers, orders and other data that may be needed in the future for Reelkix's e-Commerce app.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
